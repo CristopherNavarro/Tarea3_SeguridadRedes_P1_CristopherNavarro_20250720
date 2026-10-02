@@ -1,0 +1,56 @@
+! ISP Running Configuration
+! Practica 2 - Infraestructura 1 (VPN IPsec FortiGate a FortiGate)
+! Estudiante: Cristopher Navarro (2025-0720) - ITLA
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no ip icmp rate-limit unreachable
+!
+hostname ISP-INTERNET
+!
+boot-start-marker
+boot-end-marker
+!
+no aaa new-model
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+interface Loopback0
+ ip address 8.8.8.8 255.255.255.255
+!
+interface FastEthernet0/0
+ description Link to FortiGate-1 (Site A)
+ ip address 203.25.7.1 255.255.255.248
+ speed auto
+ duplex auto
+!
+interface FastEthernet0/1
+ description Link to FortiGate-2 (Site B)
+ ip address 203.25.7.9 255.255.255.248
+ speed auto
+ duplex auto
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+control-plane
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login
+!
+end
